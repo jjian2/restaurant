@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <link rel="stylesheet" th:href="@{/login.css}">
+</head>
+<body>
+<main class="main">
+    <section class="sign-up" style="display:flex; opacity:1;">
+        <article class="signup-left" style="opacity:1; padding:20px;">
+            <h1>Destiny</h1>
+            <div class="wc_message">
+                <h3>Welcome Back!</h3>
+                <p>We're glad to see you again.</p>
+            </div>
+            <a th:href="@{/}" class="btn-back">
+                <i class="fas fa-angle-left angle-left-color"></i> HOME
+            </a>
+        </article>
+
+        <article class="form-area" style="opacity:1;">
+            <div class="organize-form form-area-signin" style="display:flex; opacity:1;">
+                <h2>SIGN IN</h2>
+                <form class="form" method="post" th:action="@{/loginProcess}">
+                    <div class="form-field">
+                        <label for="userId">ID</label>
+                        <input type="text" id="userId" name="userId" required />
+                    </div>
+                    <div class="form-field">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required />
+                    </div>
+                    <button type="submit" class="btn-sign btn-in">Sign In</button>
+                </form>
+                <p>계정이 없으신가요? <a th:href="@{/register}" class="link-up">Sign Up</a></p>
+            </div>
+        </article>
+
+        <article class="signup-right" style="opacity:1;"></article>
+    </section>
+</main>
+</body>
+</html>

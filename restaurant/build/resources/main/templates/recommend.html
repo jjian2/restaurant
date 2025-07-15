@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>맛집 추천 결과</title>
+  <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=84e642681736cd4be8ba93a1003f4dcc&libraries=services"></script>
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      padding: 20px;
+      background: #f9f9f9;
+    }
+    h1 {
+      text-align: center;
+    }
+    #map {
+      width: 100%;
+      height: 400px;
+      margin-bottom: 20px;
+    }
+    .card {
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-bottom: 10px;
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body data-query="[[${query}]]">
+<h1>📍 맛집 추천</h1>
+<div id="map"></div>
+<div id="results"></div>
+
+<script>
+  const keyword = document.body.dataset.query + " 맛집";
+
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
+
+    const map = new kakao.maps.Map(document.getElementById('map'), {
+      center: new kakao.maps.LatLng(lat, lng),
+      level: 3
+    });
+
+    const ps = new kakao.maps.services.Places();
+    ps.keywordSearch(keyword, function(data, status) {
+      if (status === kakao.maps.services.Status.OK) {
+        let html = "";
+        data.forEach(place => {
+          const marker = new kakao.maps.Marker({
+            map: map,
+            position: new kakao.maps.LatLng(place.y, place.x)
+          });
+
+          const infoContent = `
+            <div style="font-size:13px;">
+              <strong>${place.place_name}</strong><br>
+              ${place.road_address_name || place.address_name}<br>
+              ${place.phone ? '📞 ' + place.phone + '<br>' : ''}
+              <a href='analyze?query=${encodeURIComponent(place.place_name)}'>리뷰 분석</a>
+            </div>`;
+
+          const infowindow = new kakao.maps.InfoWindow({ content: infoContent });
+          kakao.maps.event.addListener(marker, 'click', function () {
+            infowindow.open(map, marker);
+          });
+
+          html += `
+            <div class="card">
+              <strong>${place.place_name}</strong><br>
+              ${place.road_address_name || place.address_name}<br>
+              ${place.phone ? '📞 ' + place.phone : ''}<br>
+              <a href='analyze?query=${encodeURIComponent(place.place_name)}'>리뷰 분석</a>
+            </div>`;
+        });
+
+        document.getElementById("results").innerHTML = html;
+      } else {
+        document.getElementById("results").innerText = "추천 결과를 찾을 수 없습니다.";
+      }
+    }, {
+      location: new kakao.maps.LatLng(lat, lng),
+      radius: 10000
+    });
+
+  }, function(err) {
+    alert("📍 위치 권한을 허용해야 추천이 가능합니다.");
+    console.error("위치 에러:", err);
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>맛집추천</title>
+    <link rel="stylesheet" th:href="@{/css/style.css?v=1.0}">
+</head>
+<body>
+<header>
+    <h1>맛집추천</h1>
+
+    <!-- 로그인된 사용자만 표시 -->
+    <div class="user-info" sec:authorize="isAuthenticated()">
+        <span th:text="${#authentication.name} + '님'"></span>
+        <a href="/logout" class="login-btn">로그아웃</a>
+    </div>
+
+    <!-- 로그인하지 않은 사용자만 표시 -->
+    <div class="user-info" sec:authorize="isAnonymous()">
+        <a href="/user/login" class="login-btn">로그인</a>
+    </div>
+</header>
+
+
+<!-- 🔍 검색창 -->
+<div class="search-bar">
+    <form th:action="@{/recommend}" method="get">
+        <input type="text" name="query" placeholder="지역, 음식 또는 식당명 입력" required>
+        <button type="submit">🔍 검색</button>
+    </form>
+</div>
+
+<!-- 📍 지역 추천 버튼 -->
+<div class="search-section">
+    <div class="region-buttons">
+        <span class="location-label">📍 서울 인기 지역</span><br>
+        <button onclick="location.href='/recommend?query=강남'">강남</button>
+        <button onclick="location.href='/recommend?query=홍대'">홍대</button>
+        <button onclick="location.href='/recommend?query=건대'">건대</button>
+        <button onclick="location.href='/recommend?query=이태원'">이태원</button>
+    </div>
+</div>
+
+<footer>
+    © 2025 동양미래대학교 최지안
+</footer>
+
+</body>
+</html>

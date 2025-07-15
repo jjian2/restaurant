@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${query} + ' 리뷰 분석'"></title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.2/wordcloud2.min.js"></script>
+</head>
+<body>
+<h2 th:text="'🔍 ' + ${query} + ' 블로그 리뷰 분석'"></h2>
+
+<div style="display:flex; gap:20px;">
+  <div id="wordcloud" style="width:50%; height:300px;"></div>
+  <canvas id="sentimentChart" width="400" height="300"></canvas>
+</div>
+
+<div>
+  <h3>📝 블로그 리뷰 목록</h3>
+  <div th:each="review : ${reviews}">
+    <a th:href="${review.link}" target="_blank" th:text="'🔗 ' + ${review.title}"></a>
+    <p th:text="${review.desc}"></p>
+  </div>
+</div>
+
+<script th:inline="javascript">
+  const wordList = /*[[${topWords}]]*/ [];
+  WordCloud(document.getElementById('wordcloud'), {
+    list: wordList,
+    gridSize: 10,
+    weightFactor: 5,
+    fontFamily: 'Noto Sans KR',
+    color: 'random-dark',
+    backgroundColor: '#fff'
+  });
+
+  new Chart(document.getElementById('sentimentChart'), {
+    type: 'bar',
+    data: {
+      labels: ['긍정 리뷰', '부정 리뷰'],
+      datasets: [{
+        label: '리뷰 수',
+        data: [/*[[${posCount}]]*/, /*[[${negCount}]]*/],
+        backgroundColor: ['#4caf50', '#f44336']
+      }]
+    }
+  });
+</script>
+</body>
+</html>

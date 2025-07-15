@@ -1,0 +1,46 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.1.1'
+    id 'io.spring.dependency-management' version '1.1.0'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // ✅ Spring Boot Starter Web
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // ✅ Spring Boot Starter JPA
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // ✅ MySQL Connector
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // ✅ Spring Boot Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // ✅ Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    // ✅ JSON 라이브러리 추가 (JSONObject, JSONArray 사용)
+    implementation 'org.json:json:20230227'
+
+    // ✅ 테스트
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    
+    
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

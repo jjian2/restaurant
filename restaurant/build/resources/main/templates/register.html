@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+    <link rel="stylesheet" th:href="@{/login.css}">
+</head>
+<body>
+<main class="main">
+    <section class="sign-up" style="display:flex; opacity:1;">
+        <article class="signup-left" style="opacity:1; padding:20px;">
+            <h1>Destiny</h1>
+            <div class="wc_message">
+                <h3>Let's Kick Now!</h3>
+                <p>It's Easy and takes less than 30 seconds.</p>
+            </div>
+            <a th:href="@{/}" class="btn-back">
+                <i class="fas fa-angle-left angle-left-color"></i> HOME
+            </a>
+        </article>
+
+        <article class="form-area" style="opacity:1;">
+            <div class="organize-form form-area-signup" style="display:flex; opacity:1;">
+                <h2>SIGN UP</h2>
+                <form class="form" method="post" th:action="@{/register}">
+                    <div class="form-field">
+                        <label for="userId">ID</label>
+                        <input type="text" id="userId" name="userId" required />
+                    </div>
+                    <div class="form-field">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required />
+                    </div>
+                    <div class="form-field">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required />
+                    </div>
+                    <button type="submit" class="btn-sign btn-up">Sign Up</button>
+                </form>
+                <p>이미 계정이 있으신가요? <a th:href="@{/login}" class="link-in">Sign In</a></p>
+            </div>
+        </article>
+
+        <article class="signup-right" style="opacity:1;"></article>
+    </section>
+</main>
+</body>
+</html>
