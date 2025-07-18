@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>맛집 수정</title>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" th:href="@{/css/style.css?v=1.0}">
+</head>
+<body>
+<header style="padding: 20px;">
+  <a th:href="@{/main}" style="text-decoration: none; font-size: 24px; font-weight: bold; color: #6a1b9a;">
+    🍽️ 맛집 추천
+  </a>
+
+  <div class="user-info" style="float: right;">
+    <span th:if="${#authentication.principal != 'anonymousUser'}">
+      👤 <span th:text="${#authentication.principal.username}">로그인 사용자</span>
+      <a th:href="@{/logout}" class="login-btn">로그아웃</a> <!-- 버튼 스타일 적용 -->
+    </span>
+    <span th:if="${#authentication.principal == 'anonymousUser'}">
+      <a th:href="@{/login}" class="login-btn">로그인</a> <!-- 로그인도 동일하게 -->
+    </span>
+  </div>
+</header>
+
+    <div class="form-container">
+        <h2>맛집 수정하기</h2>
+
+        <form th:action="@{/recommend/edit/{id}(id=${restaurant.id})}" th:object="${restaurant}" method="post">
+            <label>이름:</label>
+            <input type="text" th:field="*{placeName}" required><br>
+
+            <label>주소:</label>
+            <input type="text" th:field="*{addressName}" required><br>
+
+            <label>전화번호:</label>
+            <input type="text" th:field="*{phone}"><br>
+
+            <label>카테고리:</label>
+            <input type="text" th:field="*{category}"><br>
+
+            <label>상세설명:</label>
+            <textarea th:field="*{description}" rows="5" cols="50"></textarea><br>
+
+            <label>이미지 URL:</label>
+            <input type="text" th:field="*{imageUrl}"><br>
+
+            <button type="submit">수정 완료</button>
+        </form>
+    </div>
+</body>
+
+</html>

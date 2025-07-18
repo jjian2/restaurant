@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>맛집 상세 정보</title>
+    <meta charset="UTF-8" />
+   <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header style="padding: 20px;">
+  <a th:href="@{/main}" style="text-decoration: none; font-size: 24px; font-weight: bold; color: #6a1b9a;">
+    🍽️ 맛집 추천
+  </a>
+
+  <div class="user-info" style="float: right;">
+    <span th:if="${#authentication.principal != 'anonymousUser'}">
+      👤 <span th:text="${#authentication.principal.username}">로그인 사용자</span>
+      <a th:href="@{/logout}" class="login-btn">로그아웃</a> <!-- 버튼 스타일 적용 -->
+    </span>
+    <span th:if="${#authentication.principal == 'anonymousUser'}">
+      <a th:href="@{/login}" class="login-btn">로그인</a> <!-- 로그인도 동일하게 -->
+    </span>
+  </div>
+</header>
+
+
+    <div class="form-container">
+        <h2 th:text="${restaurant.placeName} + ' 상세정보'">맛집 상세</h2>
+
+        <p><strong>주소:</strong> <span th:text="${restaurant.addressName}"></span></p>
+        <p><strong>전화번호:</strong> <span th:text="${restaurant.phone}"></span></p>
+        <p><strong>카테고리:</strong> <span th:text="${restaurant.category}"></span></p>
+        <p><strong>설명:</strong> <span th:text="${restaurant.description}"></span></p>
+        <p><strong>조회수:</strong> <span th:text="${restaurant.viewCount}"></span></p>
+
+        <p><img th:src="${restaurant.imageUrl}" width="300px" th:if="${restaurant.imageUrl} != null"/></p>
+
+        <a th:href="@{/recommend/edit/{id}(id=${restaurant.id})}">✏️수정</a>
+        <a th:href="@{/recommend/delete/{id}(id=${restaurant.id})}" onclick="return confirm('삭제할까요?')">🗑삭제</a>
+        <a href="/recommend/list">📋 목록으로</a>
+    </div>
+</body>
+
+</html>

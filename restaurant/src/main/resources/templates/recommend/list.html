@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>맛집 추천 목록</title>
+    <link rel="stylesheet" th:href="@{/css/style.css?v=1.0}" />
+</head>
+<body>
+
+<header style="padding: 20px;">
+  <a th:href="@{/main}" style="text-decoration: none; font-size: 24px; font-weight: bold; color: #6a1b9a;">
+    🍽️ 맛집 추천
+  </a>
+
+  <div class="user-info" style="float: right;">
+    <span th:if="${#authentication.principal != 'anonymousUser'}">
+      👤 <span th:text="${#authentication.principal.username}">로그인 사용자</span>
+      <a th:href="@{/logout}" class="login-btn">로그아웃</a>
+    </span>
+    <span th:if="${#authentication.principal == 'anonymousUser'}">
+      <a th:href="@{/login}" class="login-btn">로그인</a>
+    </span>
+  </div>
+</header>
+
+<div class="form-container">
+    <h2>맛집 리스트</h2>
+    <a th:href="@{/recommend/write}">➕ 새 맛집 등록</a>
+    <br /><br />
+
+    <table>
+        <thead>
+            <tr>
+                <th>번호</th>
+                <th>이름</th>
+                <th>주소</th>
+                <th>조회수</th>
+                <th>작성자</th>
+                <th>상세</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="r : ${restaurants}">
+                <td th:text="${r.id}">1</td>
+                <td th:text="${r.placeName}">맛집이름</td>
+                <td th:text="${r.addressName}">주소</td>
+                <td th:text="${r.viewCount}">0</td>
+
+                <td th:if="${r.writer != null}" th:text="${r.writer.username}">작성자</td>
+                <td th:if="${r.writer == null}">익명</td>
+
+                <td>
+                    <a th:href="@{/recommend/detail/{id}(id=${r.id})}" class="detail-btn">상세보기</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

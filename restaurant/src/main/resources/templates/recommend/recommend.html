@@ -8,24 +8,45 @@
       font-family: 'Noto Sans KR', sans-serif;
       background-color: #f0f4fc;
       margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #ffffff;
+      padding: 20px 40px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    header a {
+      font-size: 24px;
+      font-weight: bold;
+      text-decoration: none;
+      color: #2b72f0;
+    }
+
+    main {
       padding: 30px;
     }
+
     h1 {
       font-size: 26px;
       color: #2b72f0;
       margin-bottom: 16px;
     }
+
     #map {
       width: 100%;
       height: 450px;
       border-radius: 15px;
       margin-bottom: 30px;
     }
+
     .card-container {
       display: flex;
       flex-wrap: wrap;
       gap: 18px;
     }
+
     .card {
       background: white;
       border-radius: 12px;
@@ -34,20 +55,25 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       transition: transform 0.3s, background-color 0.3s;
       cursor: pointer;
+      position: relative;
     }
+
     .card.active {
       background-color: #e7f0ff;
       transform: scale(1.03);
     }
+
     .card h3 {
       margin: 0 0 8px;
       color: #333;
     }
+
     .card p {
       margin: 4px 0;
       font-size: 14px;
       color: #555;
     }
+
     .analyze-btn {
       margin-top: 10px;
       background-color: #2b72f0;
@@ -57,85 +83,133 @@
       border-radius: 8px;
       cursor: pointer;
     }
+
+    .badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 18px;
+      padding: 4px 8px;
+      border-radius: 12px;
+      color: white;
+      font-weight: bold;
+    }
+
+    .badge.gold {
+      background-color: #f4b400;
+    }
+
+    .badge.silver {
+      background-color: #bdbdbd;
+    }
+
+    .badge.bronze {
+      background-color: #cd7f32;
+    }
   </style>
 </head>
 <body>
-<h1>📍 맛집 추천 결과</h1>
-<div id="map"></div>
 
-<div class="card-container">
-  <div th:each="r, iter : ${restaurants}"
-       class="card"
-       th:attr="data-lat=${r.latitude},data-lng=${r.longitude},data-name=${r.placeName},data-address=${r.addressName}"
-       th:id="${'card-' + iter.index}">
-    <h3 th:text="${r.placeName}">가게이름</h3>
-    <p th:text="${r.addressName}">주소</p>
-    <p th:text="${r.phone}">전화번호</p>
-    <p th:text="${r.category}">카테고리</p>
-    <button class="analyze-btn">리뷰 분석 보기</button>
-  </div>
-</div>
+  <!-- ✅ 상단 로고 영역 -->
+  <header>
+    <a href="/main">🍽 맛집추천</a>
+  </header>
 
-<script th:inline="javascript">
-  const places = /*[[${restaurants}]]*/ [];
-  const centerLat = /*[[${centerLat}]]*/ 37.5665;
-  const centerLng = /*[[${centerLng}]]*/ 126.9780;
-</script>
-<script th:src="@{'https://maps.googleapis.com/maps/api/js?key=' + ${googleMapApiKey} + '&callback=initMap'}" async defer></script>
-<script>
-  let map;
-  let markers = [];
-  let activeCard = null;	
+  <main>
+    <h1>📍 맛집 추천 결과</h1>
+    <div id="map"></div>
 
-  function initMap() {
-    map = new google.maps.Map(document.getElementById("map"), {
-      center: { lat: centerLat, lng: centerLng },
-      zoom: 15
+    <div class="card-container">
+      <div th:each="r, iter : ${restaurants}"
+           class="card"
+           th:attr="data-lat=${r.latitude},data-lng=${r.longitude},data-name=${r.placeName},data-address=${r.addressName}"
+           th:id="${'card-' + iter.index}">
+
+        <!-- 🥇🥈🥉 뱃지 표시 -->
+        <span class="badge"
+              th:text="${r.badge}"
+              th:classappend="${r.badge == '🥇'} ? 'badge gold' :
+                              (${r.badge == '🥈'} ? 'badge silver' :
+                              (${r.badge == '🥉'} ? 'badge bronze' : ''))">
+        </span>
+
+        <h3 th:text="${r.placeName}">가게이름</h3>
+        <p th:text="${r.addressName}">주소</p>
+        <p th:text="${r.phone}">전화번호</p>
+        <p th:text="${r.category}">카테고리</p>
+        <p>리뷰 수: <span th:text="${r.reviewCount}">0</span></p>
+        <button class="analyze-btn">리뷰 분석 보기</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    window.onerror = function (msg, url, lineNo, columnNo, error) {
+      alert("❌ JS Error: " + msg + "\nLine: " + lineNo + ", Column: " + columnNo);
+      return false;
+    };
+  </script>
+
+  <script th:inline="javascript">
+    const places = /*[[${restaurants}]]*/ [];
+    const centerLat = /*[[${centerLat}]]*/ 37.5665;
+    const centerLng = /*[[${centerLng}]]*/ 126.9780;
+  </script>
+
+  <script th:src="@{'https://maps.googleapis.com/maps/api/js?key=' + ${googleMapApiKey} + '&callback=initMap'}" async defer></script>
+  <script>
+    let map;
+    let markers = [];
+    let activeCard = null;
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: centerLat, lng: centerLng },
+        zoom: 15
+      });
+
+      places.forEach((place, idx) => {
+        if (!place.latitude || !place.longitude) return;
+
+        const marker = new google.maps.Marker({
+          position: { lat: parseFloat(place.latitude), lng: parseFloat(place.longitude) },
+          map: map,
+          title: place.placeName
+        });
+        markers.push(marker);
+
+        marker.addListener("click", () => {
+          scrollToCard(idx);
+        });
+      });
+    }
+
+    function scrollToCard(index) {
+      if (activeCard) activeCard.classList.remove("active");
+      const card = document.getElementById(`card-${index}`);
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      card.classList.add("active");
+      activeCard = card;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".card").forEach((card, idx) => {
+        const lat = parseFloat(card.getAttribute("data-lat"));
+        const lng = parseFloat(card.getAttribute("data-lng"));
+        const name = card.getAttribute("data-name");
+        const address = card.getAttribute("data-address");
+
+        card.addEventListener("click", () => {
+          map.panTo({ lat, lng });
+          scrollToCard(idx);
+        });
+
+        card.querySelector(".analyze-btn").addEventListener("click", (e) => {
+          e.stopPropagation();
+          window.location.href = "/recommend/analyze?name=" + encodeURIComponent(name) + "&address=" + encodeURIComponent(address);
+        });
+      });
     });
-
-    places.forEach((place, idx) => {
-      if (!place.latitude || !place.longitude) return;
-
-      const marker = new google.maps.Marker({
-        position: { lat: parseFloat(place.latitude), lng: parseFloat(place.longitude) },
-        map: map,
-        title: place.placeName
-      });
-      markers.push(marker);
-
-      marker.addListener("click", () => {
-        scrollToCard(idx);
-      });
-    });
-  }
-
-  function scrollToCard(index) {
-    if (activeCard) activeCard.classList.remove("active");
-    const card = document.getElementById(`card-${index}`);
-    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    card.classList.add("active");
-    activeCard = card;
-  }
-
-  // 카드 클릭 시 마커 중심 이동 & 리뷰 분석 이동
-  document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll(".card").forEach((card, idx) => {
-      const lat = parseFloat(card.getAttribute("data-lat"));
-      const lng = parseFloat(card.getAttribute("data-lng"));
-      const name = card.getAttribute("data-name");
-      const address = card.getAttribute("data-address");
-
-      card.addEventListener("click", () => {
-        map.panTo({ lat, lng });
-        scrollToCard(idx);
-      });
-
-      card.querySelector(".analyze-btn").addEventListener("click", (e) => {
-        e.stopPropagation();
-        window.location.href = "/recommend/analyze?name=" + encodeURIComponent(name) + "&address=" + encodeURIComponent(address);
-      });
-    });
-  });
-</script>
+  </script>
 </body>
 </html>

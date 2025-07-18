@@ -10,7 +10,24 @@
       background-color: #f8f9fa;
     }
 
-    h1 {
+    header {
+      background-color: #ffffff;
+      padding: 20px 40px;
+      border-bottom: 1px solid #e0e0e0;
+      margin-bottom: 30px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 26px;
+    }
+
+    header h1 a {
+      text-decoration: none;
+      color: #007bff;
+    }
+
+    h1.page-title {
       font-size: 26px;
       color: #007bff;
       margin-bottom: 20px;
@@ -73,11 +90,16 @@
       color: #888;
       margin-top: 10px;
     }
-
   </style>
 </head>
 <body>
-  <h1>🍽 <span th:text="${name}">맛집</span> 리뷰 분석 결과</h1>
+
+  <!-- ✅ 상단 로고 영역 추가 -->
+  <header>
+    <h1><a href="/main">맛집추천</a></h1>
+  </header>
+
+  <h1 class="page-title">🍽 <span th:text="${name}">맛집</span> 리뷰 분석 결과</h1>
 
   <div class="box">
     <div class="section-title">🔍 감성 분석</div>
@@ -99,5 +121,6 @@
       관련 블로그 리뷰가 존재하지 않습니다.
     </div>
   </div>
+
 </body>
 </html>

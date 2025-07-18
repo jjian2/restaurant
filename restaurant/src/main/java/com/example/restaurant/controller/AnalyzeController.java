@@ -9,6 +9,7 @@ import com.example.restaurant.service.NaverBlogService;
 
 import java.util.Map;
 
+@Controller
 public class AnalyzeController {
 
     @Autowired
@@ -28,7 +29,7 @@ public class AnalyzeController {
             model.addAttribute("negCount", result.get("negCount"));
             model.addAttribute("topWords", result.get("topWords"));
 
-            return "analyze";
+            return "analyze/analyze";
         } catch (Exception e) {
             e.printStackTrace();
             return "error";  // 에러 처리 페이지로 연결

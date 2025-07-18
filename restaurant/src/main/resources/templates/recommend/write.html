@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>맛집 등록</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=84e642681736cd4be8ba93a1003f4dcc&libraries=services"></script>
+</head>
+<body>
+<header style="padding: 20px;">
+  <a th:href="@{/main}" style="text-decoration: none; font-size: 24px; font-weight: bold; color: #6a1b9a;">
+    🍽️ 맛집 추천
+  </a>
+
+  <div class="user-info" style="float: right;">
+    <span th:if="${#authentication.principal != 'anonymousUser'}">
+      👤 <span th:text="${#authentication.principal.username}">로그인 사용자</span>
+      <a th:href="@{/logout}" class="login-btn">로그아웃</a> <!-- 버튼 스타일 적용 -->
+    </span>
+    <span th:if="${#authentication.principal == 'anonymousUser'}">
+      <a th:href="@{/login}" class="login-btn">로그인</a> <!-- 로그인도 동일하게 -->
+    </span>
+  </div>
+</header>
+
+<div class="form-container">
+    <h2>📌 맛집 등록하기</h2>
+    <form id="restaurantForm" th:action="@{/recommend/write}" th:object="${restaurant}" method="post">
+        <label>이름</label>
+        <input type="text" th:field="*{placeName}" required />
+
+        <label>주소</label>
+        <input type="text" th:field="*{addressName}" id="addressInput" required />
+
+        <label>전화번호</label>
+        <input type="text" th:field="*{phone}" />
+
+        <label>카테고리</label>
+        <input type="text" th:field="*{category}" />
+
+        <label>설명</label>
+        <textarea th:field="*{description}" rows="4"></textarea>
+
+        <label>썸네일 이미지 URL</label>
+        <input type="text" th:field="*{imageUrl}" />
+
+        <!-- 좌표 히든 필드 -->
+        <input type="hidden" th:field="*{longitude}" id="xCoord" />
+        <input type="hidden" th:field="*{latitude}" id="yCoord" />
+
+        <button type="submit">등록</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById("restaurantForm").addEventListener("submit", function (event) {
+        event.preventDefault(); // 기본 제출 막음
+
+        var geocoder = new kakao.maps.services.Geocoder();
+        var address = document.getElementById("addressInput").value;
+
+        geocoder.addressSearch(address, function (result, status) {
+            if (status === kakao.maps.services.Status.OK && result.length > 0) {
+                document.getElementById("xCoord").value = result[0].x;
+                document.getElementById("yCoord").value = result[0].y;
+                document.getElementById("restaurantForm").submit(); // 좌표 셋팅 후 제출
+            } else {
+                alert("주소로 좌표를 찾을 수 없습니다.");
+            }
+        });
+    });
+</script>
+</body>
+</html>

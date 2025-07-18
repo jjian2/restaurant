@@ -20,21 +20,21 @@ public class SecurityConfig {
     public SecurityConfig(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
+            .csrf().disable() // ✅ CSRF 완전 비활성화
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/user/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
-                .requestMatchers("/main").permitAll()  // 누구나 접근 가능
+                .requestMatchers("/recommend", "/recommend/**").permitAll()  // ✅ recommend 전체 경로 허용
+                .requestMatchers("/main").permitAll()
                 .anyRequest().permitAll()
             )
             .formLogin(form -> form
-                .loginPage("/user/login")               // ✅ 컨트롤러에서 매핑한 경로
-                .loginProcessingUrl("/process-login")           // ✅ POST 요청 처리 경로
-                .defaultSuccessUrl("/main", true)       // ✅ 성공 시 이동
-                .failureUrl("/user/login?error=true")   // ✅ 실패 시 이동
+                .loginPage("/user/login")
+                .loginProcessingUrl("/process-login")
+                .defaultSuccessUrl("/main", true)
+                .failureUrl("/user/login?error=true")
                 .permitAll()
             )
             .logout(logout -> logout
@@ -55,4 +55,5 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+    
 }

@@ -16,7 +16,7 @@ public class AuthController {
     // 회원가입 페이지 렌더링
     @GetMapping("/register")
     public String showRegisterForm() {
-        return "register";  // templates/register.html
+        return "user/register";  // templates/register.html
     }
 
     // 회원가입 처리
@@ -25,7 +25,7 @@ public class AuthController {
         try {
             user.setRole("ROLE_USER"); // ✅ 기본 권한 설정 추가
             userService.registerUser(user); // 비밀번호 암호화 포함
-            return "redirect:/login"; // 로그인 페이지로 이동
+            return "redirect:/user/login"; // 로그인 페이지로 이동
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("error", "회원가입 실패: " + e.getMessage());

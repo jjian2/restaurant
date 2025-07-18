@@ -3,103 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <title>회원가입 | 맛집추천</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Pretendard', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f9f9f9;
-    }
-
-    header {
-      background-color: #ffffff;
-      padding: 20px 40px;
-      border-bottom: 1px solid #e0e0e0;
-    }
-
-    header h1 {
-      margin: 0;
-      color: #007bff;
-    }
-
-    .register-container {
-      max-width: 450px;
-      margin: 80px auto;
-      padding: 40px;
-      background-color: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      text-align: center;
-    }
-
-    .register-container h2 {
-      margin-bottom: 30px;
-      color: #333;
-    }
-
-    .register-container input {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 15px;
-    }
-
-    .register-container button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 20px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .register-container p {
-      margin-top: 20px;
-      font-size: 14px;
-      color: #666;
-    }
-
-    .register-container a {
-      color: #007bff;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 60px;
-      color: gray;
-      padding: 20px;
-      font-size: 14px;
-    }
-  </style>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
+  <!-- ✅ 상단 로고 클릭 시 /main 이동 -->
   <header>
-    <h1>맛집추천</h1>
+    <h1><a href="/main">맛집추천</a></h1>
   </header>
-
-  <div class="register-container">
-    <h2>회원가입</h2>
-    <form action="/registerProcess" method="post">
-      <input type="text" name="username" placeholder="아이디" required>
-      <input type="password" name="password" placeholder="비밀번호" required>
-      <input type="text" name="email" placeholder="이메일" required>
-      <button type="submit">회원가입</button>
-    </form>
-    <p>이미 계정이 있으신가요? <a href="/login">로그인</a></p>
-  </div>
+	<div class="register-container">
+	    <h2>회원가입</h2>
+	    <form action="/registerProcess" method="post">
+	        <input type="text" name="username" placeholder="아이디" required>
+	        <input type="password" name="password" placeholder="비밀번호" required>
+	        <input type="text" name="email" placeholder="이메일" required>
+	        <button type="submit">회원가입</button>
+	    </form>
+	
+	    <div class="login-link">
+	        이미 계정이 있으신가요? <a href="/user/login">로그인</a>
+	    </div>
+	</div>
 
   <footer>
     © 2025 동양미래대학교 최지안

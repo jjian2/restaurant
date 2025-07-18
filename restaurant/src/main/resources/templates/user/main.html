@@ -2,51 +2,87 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
 <head>
     <meta charset="UTF-8">
     <title>맛집추천</title>
     <link rel="stylesheet" th:href="@{/css/style.css?v=1.0}">
 </head>
-<body>
-<header>
-    <h1>맛집추천</h1>
 
-    <!-- 로그인된 사용자만 표시 -->
+<body>
+
+<!-- ✅ 헤더 -->
+<header>
+    <h1><a href="/main">🍽️ 맛집추천</a></h1>
+
+    <!-- 로그인된 사용자 -->
     <div class="user-info" sec:authorize="isAuthenticated()">
-        <span th:text="${#authentication.name} + '님'"></span>
+        👤 <span th:text="${#authentication.name + '님'}"></span>
         <a href="/logout" class="login-btn">로그아웃</a>
     </div>
 
-    <!-- 로그인하지 않은 사용자만 표시 -->
+    <!-- 비로그인 사용자 -->
     <div class="user-info" sec:authorize="isAnonymous()">
         <a href="/user/login" class="login-btn">로그인</a>
     </div>
 </header>
 
-
 <!-- 🔍 검색창 -->
 <div class="search-bar">
-    <form th:action="@{/recommend}" method="get">
-        <input type="text" name="query" placeholder="지역, 음식 또는 식당명 입력" required>
-        <button type="submit">🔍 검색</button>
-    </form>
+	<form action="/recommend/search" method="GET">
+	    <input type="text" name="keyword" placeholder="지역명을 입력하세요">
+	  <button type="submit">🔍 검색</button>
+	</form>
 </div>
 
-<!-- 📍 지역 추천 버튼 -->
+<!-- 📍 인기 지역 버튼 -->
 <div class="search-section">
     <div class="region-buttons">
-        <span class="location-label">📍 서울 인기 지역</span><br>
-        <button onclick="location.href='/recommend?query=강남'">강남</button>
-        <button onclick="location.href='/recommend?query=홍대'">홍대</button>
-        <button onclick="location.href='/recommend?query=건대'">건대</button>
-        <button onclick="location.href='/recommend?query=이태원'">이태원</button>
+        <span class="location-label">📍 인기 지역</span><br>
+
+        <!-- ✅ 인기 지역 있을 때 -->
+        <th:block th:if="${popularRegions != null and !#lists.isEmpty(popularRegions)}">
+            <th:block th:each="region : ${popularRegions}">
+			<button type="button"
+			        class="region-btn"
+			        th:text="${region}"
+			        th:attr="data-region=${region}">
+			</button>
+            </th:block>
+        </th:block>
+
+        <!-- ❗ 인기 지역 없을 때 -->
+        <th:block th:if="${popularRegions == null or #lists.isEmpty(popularRegions)}">
+            <span style="color: gray;">⚠️ 최근 검색된 지역이 없습니다.</span>
+        </th:block>
     </div>
 </div>
 
-<footer>
+<!-- ✅ 게시판 바로가기 -->
+<div class="button-group">
+    <a href="/board/list" class="action-btn">📂 맛집 게시판 보기</a>
+    <a href="/restaurant/write" class="action-btn">📝 맛집 직접 등록</a>
+</div>
+
+
+<!-- ⬇️ 푸터 -->
+<footer style="text-align: center; margin-top: 80px;">
     © 2025 동양미래대학교 최지안
 </footer>
 
+<!-- 버튼 선택 효과 스크립트 -->
+<script>
+    const buttons = document.querySelectorAll('.region-btn');
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            buttons.forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+
+            const region = btn.dataset.region;
+            if (region) {
+                window.location.href = `/recommend/search?keyword=${region}`;
+            }
+        });
+    });
+</script>
 </body>
 </html>

@@ -24,6 +24,7 @@ dependencies {
 
     // ✅ Spring Boot Security
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    
 
     // ✅ Lombok
     compileOnly 'org.projectlombok:lombok:1.18.30'
@@ -37,6 +38,8 @@ dependencies {
     
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    
+    implementation 'org.jsoup:jsoup:1.17.2'  // 최신 버전 확인 가능 
     
     
 }
